@@ -4,28 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>提取文本并显示</title>
 </head>
 
 <body>
 
+  <div id="result"></div>
+
   <script>
-    async function fetchAndExtract() {
-      try {
-        const response = await fetch('http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1');
-        const text = await response.text();
-        const start = text.indexOf('①') + 1;
-        const end = text.indexOf('①', start);
-        const result = text.substring(start, end);
-        document.body.innerHTML = `<p>${result}</p>`;
-      } catch (error) {
-        console.error('Error fetching or extracting text:', error);
-      }
-    }
+    // 要提取文本的链接
+    const url = 'http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1';
 
-    fetchAndExtract();
+    // 使用fetch获取网页内容
+    fetch(url)
+    .then(response => response.text())
+    .then(data => {
+        // 使用正则表达式提取①①之间的文字
+        const regex = /①(.*?)①/g;
+        const matches = data.match(regex);
+        if (matches) {
+          const resultDiv = document.getElementById('result');
+          resultDiv.textContent = matches[0].substring(1, matches[0].length - 1);
+        }
+      })
+    .catch(error => console.error('Error fetching data:', error));
   </script>
-
 </body>
 
 </html>
