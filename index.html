@@ -1,61 +1,36 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>提取文字并生成文件</title>
-</head>
-
-<body>
-    <div id="result"></div>
-    <button onclick="extractAndProcess()">提取并处理</button>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Text Between Symbols</title>
     <script>
-        async function extractAndProcess() {
-            const url = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
+        async function fetchAndExtractText() {
             try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    const text = await response.text();
-                    const pattern = /①(.*?)①/;
-                    const match = text.match(pattern);
-                    if (match && match.length > 1) {
-                        const content = match[1];
-                        document.getElementById('result').innerText = content;
+                // 使用fetch API从给定的URL获取数据
+                const response = await fetch('http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1');
+                const text = await response.text();
 
-                        // 模拟复制功能（仅在支持的浏览器中有效）
-                        try {
-                            await navigator.clipboard.writeText(content);
-                            console.log('已复制到剪贴板');
-                        } catch (error) {
-                            console.log('复制失败: ', error);
-                        }
+                // 提取两个"①"之间的文本
+                const start = text.indexOf('①');
+                const end = text.indexOf('①', start + 1);
+                const extractedText = text.substring(start + 1, end);
 
-                        // 这里假设通过fetch发送数据到后端来生成文件，后端接口为 /generateFile
-                        const postData = { content: content };
-                        const postResponse = await fetch('/generateFile', {
-                            method: 'POST',
-                            headers: {
-                                'Content - Type': 'application/json'
-                            },
-                            body: JSON.stringify(postData)
-                        });
-                        if (postResponse.ok) {
-                            console.log('文件生成成功');
-                        } else {
-                            console.log('文件生成失败');
-                        }
-                    } else {
-                        console.log('未找到①①之间的文字');
-                    }
-                } else {
-                    console.log('访问网页失败，状态码: ', response.status);
-                }
+                // 显示提取的文本
+                document.getElementById('extractedText').textContent = extractedText;
+
             } catch (error) {
-                console.log('请求出错: ', error);
+                console.error('Error fetching data: ', error);
+                document.getElementById('extractedText').textContent = 'Failed to load data.';
             }
         }
-    </script>
-</body>
 
+        // 当文档加载完毕时，执行fetchAndExtractText函数
+        document.addEventListener('DOMContentLoaded', fetchAndExtractText);
+    </script>
+</head>
+<body>
+    <h1>Extracted Text:</h1>
+    <pre id="extractedText"></pre>
+</body>
 </html>
