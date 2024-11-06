@@ -3,45 +3,35 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>提取并处理文字</title>
+    <title>提取文字并输出API</title>
 </head>
 
 <body>
-    <button onclick="extractAndCopy()">提取并复制</button>
-    <div id="result"></div>
-
     <script>
-        async function extractAndCopy() {
-            const url = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
+        async function extractAndOutput() {
+            const apiUrl = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
             try {
-                const response = await fetch(url);
+                const response = await fetch(apiUrl);
                 if (response.ok) {
                     const text = await response.text();
                     const pattern = /①(.*?)①/;
                     const match = text.match(pattern);
                     if (match && match.length > 1) {
-                        const contentToCopy = match[1];
-                        // 在新页面显示
-                        const newWindow = window.open('', '_blank');
-                        newWindow.document.write('<html><body><p>' + contentToCopy + '</p></body></html>');
-                        // 假设这里有一个id为'target'的元素需要自动填充
-                        document.getElementById('result').innerText = contentToCopy;
-                        // 使用Clipboard API复制内容（仅在支持的浏览器中）
-                        navigator.clipboard.writeText(contentToCopy).then(() => {
-                            console.log('已复制到剪贴板');
-                        }).catch((err) => {
-                            console.error('复制失败: ', err);
-                        });
+                        const content = match[1];
+                        console.log("提取的文字: " + content);
                     } else {
-                        console.log('未找到①①之间的文字');
+                        console.log("未找到①①之间的文字");
                     }
+                    console.log("API链接: " + apiUrl);
                 } else {
-                    console.log('访问网页失败，状态码: ', response.status);
+                    console.log("访问API失败，状态码: " + response.status);
                 }
             } catch (error) {
-                console.log('请求出错: ', error);
+                console.log("请求出错: " + error);
             }
         }
+
+        extractAndOutput();
     </script>
 </body>
 
