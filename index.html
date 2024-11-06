@@ -1,47 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extract and Fill Text</title>
+    <title>提取文字</title>
 </head>
-<body>
-    <div id="source">
-        <p>这里是一些示例文本①需要提取的文本①这里是一些其他文本。</p>
-    </div>
-    <div id="target"></div>
 
+<body>
     <script>
-        async function fetchAndFillText() {
-            const apiUrl = 'http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1';
+        async function extractAndCopy() {
+            const url = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
             try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
+                const response = await fetch(url);
+                if (response.ok) {
+                    const text = await response.text();
+                    const pattern = /①(.*?)①/;
+                    const match = text.match(pattern);
+                    if (match && match.length > 1) {
+                        const contentToCopy = match[1];
+                        // 这里只是简单地将内容显示在控制台，可以根据需求进行处理，比如填充到某个元素中
+                        console.log(contentToCopy);
+                        // 如果要真正实现复制功能，可以使用Clipboard API（在支持的浏览器中）
+                        // navigator.clipboard.writeText(contentToCopy).then(() => {
+                        //     console.log('已复制到剪贴板');
+                        // }).catch((err) => {
+                        //     console.error('复制失败: ', err);
+                        // });
+                    } else {
+                        console.log('未找到①①之间的文字');
+                    }
+                } else {
+                    console.log('访问网页失败，状态码: ', response.status);
                 }
-                const data = await response.text();
-                const extractedText = extractTextBetweenSymbols(data, '①', '①');
-                fillExtractedText(extractedText);
             } catch (error) {
-                console.error('There has been a problem with your fetch operation:', error);
+                console.log('请求出错: ', error);
             }
         }
-
-        function extractTextBetweenSymbols(text, startSymbol, endSymbol) {
-            const startIndex = text.indexOf(startSymbol);
-            if (startIndex === -1) return '';
-            const endIndex = text.indexOf(endSymbol, startIndex + startSymbol.length);
-            if (endIndex === -1) return '';
-            return text.substring(startIndex + startSymbol.length, endIndex);
-        }
-
-        function fillExtractedText(text) {
-            const targetElement = document.getElementById('target');
-            targetElement.innerText = text;
-        }
-
-        // Call the function to fetch and fill text when the page loads
-        window.onload = fetchAndFillText;
+        extractAndCopy();
     </script>
 </body>
+
 </html>
