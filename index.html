@@ -3,35 +3,35 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>提取文字并输出API</title>
+    <title>提取文字</title>
 </head>
 
 <body>
     <script>
-        async function extractAndOutput() {
-            const apiUrl = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
+        async function extractAndGenerate() {
+            const url = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(url);
                 if (response.ok) {
                     const text = await response.text();
                     const pattern = /①(.*?)①/;
                     const match = text.match(pattern);
                     if (match && match.length > 1) {
                         const content = match[1];
-                        console.log("提取的文字: " + content);
+                        // 这里只是模拟生成文件的操作，实际上不能直接在前端生成服务器端文件
+                        console.log("如果在后端，将生成包含以下内容的quark_cookie.txt文件: " + content);
                     } else {
                         console.log("未找到①①之间的文字");
                     }
-                    console.log("API链接: " + apiUrl);
                 } else {
-                    console.log("访问API失败，状态码: " + response.status);
+                    console.log("访问网页失败，状态码: " + response.status);
                 }
             } catch (error) {
                 console.log("请求出错: " + error);
             }
         }
 
-        extractAndOutput();
+        extractAndGenerate();
     </script>
 </body>
 
