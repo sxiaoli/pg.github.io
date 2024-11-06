@@ -4,31 +4,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>提取文本并显示</title>
+  <title>Extract Text</title>
+  <style>
+    #extracted-text {
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 
 <body>
 
-  <div id="result"></div>
+  <div id="extracted-text"></div>
 
   <script>
-    // 要提取文本的链接
-    const url = 'http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1';
+    async function extractText() {
+      try {
+        const response = await fetch('http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1');
+        const text = await response.text();
+        const startIndex = text.indexOf('①') + 1;
+        const endIndex = text.indexOf('①', startIndex);
+        const extractedText = text.substring(startIndex, endIndex);
+        const displayDiv = document.getElementById('extracted-text');
+        displayDiv.textContent = extractedText;
+        // 创建一个临时的文本区域用于复制操作
+        const textArea = document.createElement('textarea');
+        textArea.value = extractedText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      } catch (error) {
+        console.error('Error fetching or extracting text:', error);
+      }
+    }
 
-    // 使用fetch获取网页内容
-    fetch(url)
-    .then(response => response.text())
-    .then(data => {
-        // 使用正则表达式提取①①之间的文字
-        const regex = /①(.*?)①/g;
-        const matches = data.match(regex);
-        if (matches) {
-          const resultDiv = document.getElementById('result');
-          resultDiv.textContent = matches[0].substring(1, matches[0].length - 1);
-        }
-      })
-    .catch(error => console.error('Error fetching data:', error));
+    extractText();
   </script>
+
 </body>
 
 </html>
