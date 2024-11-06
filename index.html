@@ -1,22 +1,61 @@
-import requests
-import re
-def extract_and_save():
-    url = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            content = response.text
-            pattern = re.compile('①(.*?)①')
-            match = pattern.search(content)
-            if match:
-                extracted_text = match.group(1)
-                with open('quark_cookie.txt', 'w') as f:
-                    f.write(extracted_text)
-                return "提取并保存成功"
-            else:
-                return "未找到①①之间的文字"
-        else:
-            return "访问网页失败，状态码: {}".format(response.status_code)
-    except requests.RequestException as e:
-        return "请求出错: {}".format(str(e))
-print(extract_and_save())
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>提取文字并生成文件</title>
+</head>
+
+<body>
+    <div id="result"></div>
+    <button onclick="extractAndProcess()">提取并处理</button>
+
+    <script>
+        async function extractAndProcess() {
+            const url = "http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1";
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    const text = await response.text();
+                    const pattern = /①(.*?)①/;
+                    const match = text.match(pattern);
+                    if (match && match.length > 1) {
+                        const content = match[1];
+                        document.getElementById('result').innerText = content;
+
+                        // 模拟复制功能（仅在支持的浏览器中有效）
+                        try {
+                            await navigator.clipboard.writeText(content);
+                            console.log('已复制到剪贴板');
+                        } catch (error) {
+                            console.log('复制失败: ', error);
+                        }
+
+                        // 这里假设通过fetch发送数据到后端来生成文件，后端接口为 /generateFile
+                        const postData = { content: content };
+                        const postResponse = await fetch('/generateFile', {
+                            method: 'POST',
+                            headers: {
+                                'Content - Type': 'application/json'
+                            },
+                            body: JSON.stringify(postData)
+                        });
+                        if (postResponse.ok) {
+                            console.log('文件生成成功');
+                        } else {
+                            console.log('文件生成失败');
+                        }
+                    } else {
+                        console.log('未找到①①之间的文字');
+                    }
+                } else {
+                    console.log('访问网页失败，状态码: ', response.status);
+                }
+            } catch (error) {
+                console.log('请求出错: ', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
