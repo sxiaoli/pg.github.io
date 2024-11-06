@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    async function fetchAndExtract() {
+      try {
+        const response = await fetch('http://api.v6x.wht.dgwht.top/text/3de88d10d01929be/c99d7411ccc29bc1');
+        const text = await response.text();
+        const start = text.indexOf('①') + 1;
+        const end = text.indexOf('①', start);
+        const result = text.substring(start, end);
+        document.body.innerHTML = `<p>${result}</p>`;
+      } catch (error) {
+        console.error('Error fetching or extracting text:', error);
+      }
+    }
+
+    fetchAndExtract();
+  </script>
+
+</body>
+
+</html>
